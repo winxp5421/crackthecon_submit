@@ -18,7 +18,13 @@ count  = 0
 founds = []
 with open(sys.argv[1], 'r') as in_file:
     for line in in_file:
-        founds.append(line.rstrip('\r\n'))
+        line = line.rstrip('\r\n')
+        pos = line.find('$HEX[')
+        if pos > -1:
+            prefix = line[:pos]
+            pw_dec = line[pos+5:-1].decode('hex')
+            line = prefix + pw_dec
+        founds.append(line)
 
 data = {u"key": token, u"found": founds}
 response = requests.post(baseurl, json.dumps(data))
