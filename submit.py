@@ -1,21 +1,25 @@
-import requests
+#!/usr/bin/env python2
+
+import re
 import sys
 import json
+import requests
 
-baseurl		= 'https://crackthecon.com/api/submit.php'
-count			= 0
-token			= 0
-input_file		= sys.argv[1]
-in_file		= open(input_file, 'r')
+if len(sys.argv) != 2:
+    sys.exit("Usage: %s cracked_hashes.txt" % sys.argv[0])
 
-with open('token', 'r') as token_file:
-    token = token_file.read().rstrip()
+baseurl = 'https://crackthecon.com/api/submit.php'
+token   = 'Add your token here'
 
-founds, data	= [], []
-for line in in_file:
-    founds.append(line.rstrip('\r\n'))
+if not re.match('^[0-9A-Za-z]{64}$', token):
+    sys.exit('Check your token.')
+
+count  = 0
+founds = []
+with open(sys.argv[1], 'r') as in_file:
+    for line in in_file:
+        founds.append(line.rstrip('\r\n'))
 
 data = {u"key": token, u"found": founds}
-
 response = requests.post(baseurl, json.dumps(data))
 print response.content
