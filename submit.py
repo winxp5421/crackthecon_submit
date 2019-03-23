@@ -13,7 +13,7 @@ with open('token', 'r') as token_file:
 
 founds, data	= [], []
 for line in in_file:
-    founds.append(line.rstrip())
+    founds.append(line.rstrip('\r\n'))
 
 data = {u"key": token, u"found": founds}
 
