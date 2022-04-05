@@ -1,15 +1,16 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import re
 import sys
 import json
 import requests
+import binascii
 
 if len(sys.argv) != 2:
     sys.exit("Usage: %s cracked_hashes.txt" % sys.argv[0])
 
 baseurl = 'https://crackthecon.com/api/submit.php'
-token   = 'Add your token here'
+token   = 'Add Your API Key Here'
 
 if not re.match('^[0-9A-Za-z]{64}$', token):
     sys.exit('Check your token.')
@@ -22,10 +23,10 @@ with open(sys.argv[1], 'r') as in_file:
         pos = line.find('$HEX[')
         if pos > -1:
             prefix = line[:pos]
-            pw_dec = line[pos+5:-1].decode('hex')
+            pw_dec = binascii.unhexlify(line[pos+5:-1]).decode()
             line = prefix + pw_dec
         founds.append(line)
 
-data = {u"key": token, u"found": founds}
+data = {"key": token, "found": founds}
 response = requests.post(baseurl, json.dumps(data))
-print response.content
+print(response.content)
